@@ -11,11 +11,10 @@ yaml = {}
 yaml["sudo"] = "required"
 yaml["services"] = ["docker"]
 yaml["language"] = "ruby"
-yaml["before_install"] = ["sudo docker build -t quine-relay ."]
+yaml["install"] = ["sudo docker build -t quine-relay ."]
+yaml["before_script"] = ["sudo docker run --name qr -t quine-relay ruby src/show-version-info.rb"]
 yaml["script"] = ["sudo docker run --privileged --name qr -t quine-relay"]
-yaml["after_success"] = [
-  "sh .travis.yml"
-]
+yaml["after_success"] = ["sh .travis.yml"]
 yaml["env"] = {
   "global" => {
     "secure" => "NGDakAqRZgGJwEJTlXenhoXcq9ulf0X0fjnC+oF+ktTXCRpdbQd8+faxIW5DR26qF5OMWPqsLtUv8HtQyv5P5gVNs41hXygmNU1R9TOMpw64FjXtkD1HNf0D4jE2STuUU2xB+sCifeb9z6SvMpcy6ZswBlhAVnV+5dboNZL0Ww0="
