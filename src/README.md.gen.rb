@@ -7,26 +7,7 @@ other_packages.each do |package|
   `dpkg -s #{ package }` # just check the packages
 end
 
-pkg_versions = {}
 apts = RunSteps.map {|s| s.apt }
-`which apt-get >/dev/null && dpkg -s #{ apts.join(" ") }`.b.split("\n\n").each do |s|
-  name = s[/^Package: (.*)$/, 1]
-  version = s[/^Version: (.*)$/, 1]
-  pkg_versions[name] = version if name && version
-end
-
-rows = [["\\#", "language", "ubuntu package", "version"]]
-rows += RunSteps.flat_map.with_index do |s, idx|
-  (s.apt.is_a?(Array) ? s.apt : [s.apt]).map.with_index do |apt, i|
-    [i == 0 ? (idx + 1).to_s : "", i == 0 ? s.name : "", apt || "*N/A*", pkg_versions[apt] || '-']
-  end
-end
-
-ws = rows.transpose.map {|row| row.map {|s| s.size }.max + 1 }
-rows[1, 0] = [ws.map {|w| "-" * w }]
-rows = rows.map do |col|
-  (col.zip(ws).map {|s, w| s.ljust(w) } * "|").rstrip
-end
 
 apt_get = "sudo apt-get install #{ [*apts.flatten.compact.uniq, *other_packages].sort * " " }"
 apt_get.gsub!(/.{,70}( |\z)/) do
@@ -108,15 +89,11 @@ You may find [instructions for other platforms in the wiki](https://github.com/m
 If you are not using these Linux distributions, please find your way yourself.
 If you could do it, please let me know.  Good luck.
 
+
 ## Tested interpreter/compiler versions
 
-I used the following Ubuntu deb packages to test this program.
-
-% rows.each do |row|
-<%= row %>
-% end
-
-Note that some languages are not available in Ubuntu (marked as *N/A*).
+See the [Travis CI log](https://travis-ci.org/mame/quine-relay).  
+Note that some languages are not available in Ubuntu (marked as `*N/A*`).
 This repository includes their implementations in `vendor/`.
 See also `vendor/README` in detail.
 
