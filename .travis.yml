@@ -6,7 +6,7 @@ language: ruby
 install:
 - sudo docker build -t quine-relay .
 before_script:
-- sudo docker run --name qr -t quine-relay ruby src/show-version-info.rb
+- sudo docker run --rm --name qr -t quine-relay ruby src/show-version-info.rb
 script:
 - sudo docker run --privileged --name qr -t quine-relay
 after_success:
